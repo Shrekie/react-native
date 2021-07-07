@@ -4,19 +4,18 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
+ * @flow
  * @format
  */
 
 'use strict';
 
-const DeviceEventManager = require('NativeModules').DeviceEventManager;
-const RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+import NativeDeviceEventManager from '../../Libraries/NativeModules/specs/NativeDeviceEventManager';
+import RCTDeviceEventEmitter from '../EventEmitter/RCTDeviceEventEmitter';
 
 const DEVICE_BACK_EVENT = 'hardwareBackPress';
 
-type BackPressEventName = $Enum<{
-  backPress: string,
-}>;
+type BackPressEventName = 'backPress' | 'hardwareBackPress';
 
 const _backPressSubscriptions = [];
 
@@ -60,9 +59,24 @@ RCTDeviceEventEmitter.addListener(DEVICE_BACK_EVENT, function() {
  * });
  * ```
  */
-const BackHandler = {
-  exitApp: function() {
-    DeviceEventManager.invokeDefaultBackPressHandler();
+type TBackHandler = {|
+  +exitApp: () => void,
+  +addEventListener: (
+    eventName: BackPressEventName,
+    handler: Function,
+  ) => {remove: () => void, ...},
+  +removeEventListener: (
+    eventName: BackPressEventName,
+    handler: Function,
+  ) => void,
+|};
+const BackHandler: TBackHandler = {
+  exitApp: function(): void {
+    if (!NativeDeviceEventManager) {
+      return;
+    }
+
+    NativeDeviceEventManager.invokeDefaultBackPressHandler();
   },
 
   /**
@@ -74,12 +88,12 @@ const BackHandler = {
   addEventListener: function(
     eventName: BackPressEventName,
     handler: Function,
-  ): {remove: () => void} {
+  ): {remove: () => void, ...} {
     if (_backPressSubscriptions.indexOf(handler) === -1) {
       _backPressSubscriptions.push(handler);
     }
     return {
-      remove: () => BackHandler.removeEventListener(eventName, handler),
+      remove: (): void => BackHandler.removeEventListener(eventName, handler),
     };
   },
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <fabric/components/text/TextShadowNode.h>
-#include <fabric/core/ConcreteComponentDescriptor.h>
+#include <react/components/text/TextShadowNode.h>
+#include <react/core/ConcreteComponentDescriptor.h>
 
 namespace facebook {
 namespace react {

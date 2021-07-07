@@ -10,7 +10,7 @@
 
 'use strict';
 
-const invariant = require('fbjs/lib/invariant');
+const invariant = require('invariant');
 
 const levelsMap = {
   log: 'log',
@@ -29,7 +29,7 @@ const RCTLog = {
     if (typeof global.nativeLoggingHook === 'undefined') {
       RCTLog.logToConsole(level, ...args);
     } else {
-      // Report native warnings to YellowBox
+      // Report native warnings to LogBox
       if (warningHandler && level === 'warn') {
         warningHandler(...args);
       }

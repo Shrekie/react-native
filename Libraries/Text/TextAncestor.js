@@ -10,9 +10,9 @@
 
 'use strict';
 
-const React = require('React');
+const React = require('react');
 
 /**
  * Whether the current element is the descendant of a <Text> element.
  */
-module.exports = React.createContext(false);
+module.exports = (React.createContext(false): React$Context<$FlowFixMe>);

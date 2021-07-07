@@ -1,11 +1,11 @@
-/**
+/*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-#import "RCTAnimationUtils.h"
+#import <React/RCTAnimationUtils.h>
 
 #import <React/RCTLog.h>
 
@@ -102,7 +102,13 @@ float UIAnimationDragCoefficient(void);
 CGFloat RCTAnimationDragCoefficient()
 {
 #if TARGET_IPHONE_SIMULATOR
-  return (CGFloat)UIAnimationDragCoefficient();
+  if (NSClassFromString(@"XCTest") != nil) {
+    // UIAnimationDragCoefficient is 10.0 in tests for some reason, but
+    // we need it to be 1.0. Fixes T34233294
+    return 1.0;
+  } else {
+    return (CGFloat)UIAnimationDragCoefficient();
+  }
 #else
   return 1.0;
 #endif

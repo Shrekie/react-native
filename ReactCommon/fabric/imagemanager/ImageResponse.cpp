@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
@@ -10,8 +10,8 @@
 namespace facebook {
 namespace react {
 
-ImageResponse::ImageResponse(const std::shared_ptr<void> &image):
-  image_(image) {}
+ImageResponse::ImageResponse(const std::shared_ptr<void> &image)
+    : image_(image) {}
 
 std::shared_ptr<void> ImageResponse::getImage() const {
   return image_;

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
@@ -7,13 +7,14 @@
 
 #pragma once
 
-#include <fabric/components/text/RawTextShadowNode.h>
-#include <fabric/core/ConcreteComponentDescriptor.h>
+#include <react/components/text/RawTextShadowNode.h>
+#include <react/core/ConcreteComponentDescriptor.h>
 
 namespace facebook {
 namespace react {
 
-using RawTextComponentDescriptor = ConcreteComponentDescriptor<RawTextShadowNode>;
+using RawTextComponentDescriptor =
+    ConcreteComponentDescriptor<RawTextShadowNode>;
 
 } // namespace react
 } // namespace facebook

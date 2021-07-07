@@ -1,14 +1,16 @@
-// Copyright (c) Facebook, Inc. and its affiliates.
-
-// This source code is licensed under the MIT license found in the
-// LICENSE file in the root directory of this source tree.
+/*
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 #pragma once
 
-#include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFRunLoop.h>
-#include <cxxreact/MessageQueueThread.h>
-#include <fabric/events/EventBeat.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <react/core/EventBeat.h>
+#include <react/utils/RuntimeExecutor.h>
 
 namespace facebook {
 namespace react {
@@ -17,19 +19,19 @@ namespace react {
  * Event beat associated with main run loop cycle.
  * The callback is always called on the main thread.
  */
-class MainRunLoopEventBeat final:
-  public EventBeat {
-
-public:
-  MainRunLoopEventBeat(std::shared_ptr<MessageQueueThread> messageQueueThread);
+class MainRunLoopEventBeat final : public EventBeat {
+ public:
+  MainRunLoopEventBeat(
+      EventBeat::SharedOwnerBox const &ownerBox,
+      RuntimeExecutor runtimeExecutor);
   ~MainRunLoopEventBeat();
 
   void induce() const override;
 
-private:
-  void blockMessageQueueAndThenBeat() const;
+ private:
+  void lockExecutorAndBeat() const;
 
-  std::shared_ptr<MessageQueueThread> messageQueueThread_;
+  const RuntimeExecutor runtimeExecutor_;
   CFRunLoopObserverRef mainRunLoopObserver_;
 };
 

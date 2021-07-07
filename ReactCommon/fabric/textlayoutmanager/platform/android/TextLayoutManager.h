@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
@@ -7,12 +7,11 @@
 
 #pragma once
 
-#include <memory>
-
-#include <fabric/attributedstring/AttributedString.h>
-#include <fabric/attributedstring/ParagraphAttributes.h>
-#include <fabric/core/LayoutConstraints.h>
-#include <fabric/uimanager/ContextContainer.h>
+#include <react/attributedstring/AttributedString.h>
+#include <react/attributedstring/AttributedStringBox.h>
+#include <react/core/LayoutConstraints.h>
+#include <react/textlayoutmanager/TextMeasureCache.h>
+#include <react/utils/ContextContainer.h>
 
 namespace facebook {
 namespace react {
@@ -25,21 +24,18 @@ using SharedTextLayoutManager = std::shared_ptr<const TextLayoutManager>;
  * Cross platform facade for Android-specific TextLayoutManager.
  */
 class TextLayoutManager {
-
-public:
-
-  TextLayoutManager(const SharedContextContainer &contextContainer) : contextContainer_(contextContainer) {};
+ public:
+  TextLayoutManager(const ContextContainer::Shared &contextContainer)
+      : contextContainer_(contextContainer){};
   ~TextLayoutManager();
 
   /*
    * Measures `attributedString` using native text rendering infrastructure.
    */
-  Size measure(
-    Tag reactTag,
-    AttributedString attributedString,
-    ParagraphAttributes paragraphAttributes,
-    LayoutConstraints layoutConstraints
-  ) const;
+  TextMeasurement measure(
+      AttributedStringBox attributedStringBox,
+      ParagraphAttributes paragraphAttributes,
+      LayoutConstraints layoutConstraints) const;
 
   /*
    * Returns an opaque pointer to platform-specific TextLayoutManager.
@@ -47,11 +43,15 @@ public:
    */
   void *getNativeTextLayoutManager() const;
 
-private:
+ private:
+  TextMeasurement doMeasure(
+      AttributedString attributedString,
+      ParagraphAttributes paragraphAttributes,
+      LayoutConstraints layoutConstraints) const;
 
   void *self_;
-
-  SharedContextContainer contextContainer_;
+  ContextContainer::Shared contextContainer_;
+  TextMeasureCache measureCache_{};
 };
 
 } // namespace react

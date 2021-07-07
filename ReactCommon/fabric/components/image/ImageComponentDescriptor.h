@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <fabric/components/image/ImageShadowNode.h>
-#include <fabric/core/ConcreteComponentDescriptor.h>
-#include <fabric/imagemanager/ImageManager.h>
-#include <fabric/uimanager/ContextContainer.h>
+#include <react/components/image/ImageShadowNode.h>
+#include <react/core/ConcreteComponentDescriptor.h>
+#include <react/imagemanager/ImageManager.h>
+#include <react/utils/ContextContainer.h>
 
 namespace facebook {
 namespace react {
@@ -18,26 +18,26 @@ namespace react {
 /*
  * Descriptor for <Image> component.
  */
-class ImageComponentDescriptor final:
-  public ConcreteComponentDescriptor<ImageShadowNode> {
-
-public:
-  ImageComponentDescriptor(SharedEventDispatcher eventDispatcher, const SharedContextContainer &contextContainer):
-    ConcreteComponentDescriptor(eventDispatcher),
-    imageManager_(contextContainer ? contextContainer->getInstance<SharedImageManager>() : nullptr) {}
+class ImageComponentDescriptor final
+    : public ConcreteComponentDescriptor<ImageShadowNode> {
+ public:
+  ImageComponentDescriptor(ComponentDescriptorParameters const &parameters)
+      : ConcreteComponentDescriptor(parameters),
+        imageManager_(std::make_shared<ImageManager>(contextContainer_)){};
 
   void adopt(UnsharedShadowNode shadowNode) const override {
     ConcreteComponentDescriptor::adopt(shadowNode);
 
     assert(std::dynamic_pointer_cast<ImageShadowNode>(shadowNode));
-    auto imageShadowNode = std::static_pointer_cast<ImageShadowNode>(shadowNode);
+    auto imageShadowNode =
+        std::static_pointer_cast<ImageShadowNode>(shadowNode);
 
     // `ImageShadowNode` uses `ImageManager` to initiate image loading and
     // communicate the loading state and results to mounting layer.
     imageShadowNode->setImageManager(imageManager_);
   }
 
-private:
+ private:
   const SharedImageManager imageManager_;
 };
 

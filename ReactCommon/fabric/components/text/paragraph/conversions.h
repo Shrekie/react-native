@@ -1,16 +1,27 @@
+/*
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-#include <fabric/attributedstring/conversions.h>
-#include <fabric/components/text/ParagraphLocalData.h>
 #include <folly/dynamic.h>
+#include <react/attributedstring/conversions.h>
+#include <react/components/text/ParagraphState.h>
 
 namespace facebook {
 namespace react {
 
-inline folly::dynamic toDynamic(const ParagraphLocalData &paragraphLocalData) {
-  folly::dynamic newLocalData = folly::dynamic::object();
-  newLocalData["attributedString"] = toDynamic(paragraphLocalData.getAttributedString());
-  return newLocalData;
+#ifdef ANDROID
+inline folly::dynamic toDynamic(ParagraphState const &paragraphState) {
+  folly::dynamic newState = folly::dynamic::object();
+  newState["attributedString"] = toDynamic(paragraphState.attributedString);
+  newState["paragraphAttributes"] =
+      toDynamic(paragraphState.paragraphAttributes);
+  newState["hash"] = newState["attributedString"]["hash"];
+  return newState;
 }
+#endif
 
-}
-}
+} // namespace react
+} // namespace facebook
